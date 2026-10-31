@@ -5,7 +5,7 @@
 <title>Shop All — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=11">
+<link rel="stylesheet" href="assets/css/style.css?v=12">
 </head>
 <body data-page="shop">
 <div class="container shop-wrap">
@@ -33,8 +33,8 @@
     <div class="pgrid" id="grid"></div>
   </main>
 </div>
-<script src="assets/js/data.js?v=11"></script>
-<script src="assets/js/main.js?v=11"></script>
+<script src="assets/js/data.js?v=12"></script>
+<script src="assets/js/main.js?v=12"></script>
 <script>
 const qs = new URLSearchParams(location.search);
 let state = { cats: new Set(qs.get("cat") ? [qs.get("cat")] : []), prices: new Set(), colors: new Set(), more: new Set(), q: (qs.get("q")||"").toLowerCase(), wish: qs.get("wish") === "1" };
