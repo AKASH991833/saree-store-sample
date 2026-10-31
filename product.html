@@ -18,7 +18,7 @@
       <div class="pd-price" id="pdPrice"></div>
       <div class="tax-note">Sample price · AI-generated demo photo, not actual inventory</div>
       <div class="offer-box"><h4>Sample offers</h4><ul>
-        <li>Festive discount already applied — no coupon needed</li>
+        <li>Prices shown are demo prices for layout preview</li>
         <li>Free delivery on every order in this sample</li>
         <li>7-day easy exchange (sample policy)</li>
       </ul></div>
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
   pdImg.src = p.img; pdImg.alt = p.name;
   pdName.textContent = p.name;
   pdRate.innerHTML = `<span class="pill">${p.rating} ★</span><span>${p.ratings} sample ratings</span>`;
-  pdPrice.innerHTML = `<span class="now">${SS.fmt(p.price)}</span><span class="was">${SS.fmt(p.mrp)}</span><span class="off">${SS.off(p)}% off</span>`;
+  pdPrice.innerHTML = `<span class="now">${SS.fmt(p.price)}</span><span class="off">demo price</span>`;
   specs.innerHTML = [["Fabric",p.fabric],["Colour",p.color],["Collection",p.category],["Blouse piece","Included (unstitched)"],["Care","See highlights"]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("");
   hl.innerHTML = p.highlights.map(h => `<li>${h}</li>`).join("");
   pdDesc.textContent = p.desc;

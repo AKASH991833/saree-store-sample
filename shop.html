@@ -24,7 +24,7 @@
         <option value="pop">Sort: Popularity</option>
         <option value="lo">Price: Low to High</option>
         <option value="hi">Price: High to Low</option>
-        <option value="off">Discount</option>
+        
         <option value="rate">Rating</option>
       </select>
     </div>
@@ -67,7 +67,7 @@ function renderShop(){
   const s = sort.value;
   if (s === "lo") list.sort((a,b) => a.price-b.price);
   else if (s === "hi") list.sort((a,b) => b.price-a.price);
-  else if (s === "off") list.sort((a,b) => SS.off(b)-SS.off(a));
+
   else if (s === "rate") list.sort((a,b) => b.rating-a.rating);
   else list.sort((a,b) => b.rating*b.ratings - a.rating*a.ratings);
   count.textContent = `${list.length} saree${list.length===1?"":"s"}${state.q?` for “${state.q}”`:""}${state.wish?" in your wishlist":""}`;

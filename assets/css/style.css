@@ -9,6 +9,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
@@ -28,9 +29,9 @@ header.site{position:sticky;top:0;z-index:60;background:rgba(255,253,248,.94);ba
 .logo .l1{color:var(--maroon)}
 .logo .l2{color:var(--gold)}
 .logo small{display:block;font-family:'Inter';font-size:.58rem;letter-spacing:.34em;text-transform:uppercase;color:var(--muted);font-weight:500}
-.search-wrap{flex:1;display:flex;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:.15rem .4rem .15rem 1.1rem;max-width:560px;transition:border-color .2s}
+.search-wrap{flex:1;min-width:0;display:flex;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:.15rem .4rem .15rem 1.1rem;max-width:560px;transition:border-color .2s}
 .search-wrap:focus-within{border-color:var(--gold)}
-.search-wrap input{flex:1;border:none;outline:none;background:none;padding:.5rem 0;font-size:.92rem}
+.search-wrap input{flex:1;min-width:0;border:none;outline:none;background:none;padding:.5rem 0;font-size:.92rem}
 .search-wrap button{background:var(--maroon);color:#fff;border-radius:999px;padding:.5rem 1.15rem;font-size:.85rem;font-weight:600;transition:background .2s}
 .search-wrap button:hover{background:var(--maroon-2)}
 .hd-actions{display:flex;align-items:center;gap:1.3rem;margin-left:auto}

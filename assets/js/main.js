@@ -61,13 +61,13 @@
       <div class="pimg">
         <img loading="lazy" src="${p.img}" alt="${p.name}">
         ${p.badge ? `<span class="pbadge">${p.badge}</span>` : ""}
-        <span class="poff">${SS.off(p)}% off</span>
+        <span class="poff">Demo price</span>
         <button class="wish${wished}" aria-label="wishlist" onclick="event.preventDefault();SS.toggleWish('${p.id}',this)">${SVG.heart}</button>
       </div>
       <div class="pbody">
         <div class="pname">${p.name}</div>
-        <div class="prate"><span class="stars">${SS.stars(p.rating)}</span> ${p.rating} (${p.ratings})</div>
-        <div class="pprice"><span class="now">${SS.fmt(p.price)}</span><span class="was">${SS.fmt(p.mrp)}</span><span class="save">Save ${SS.fmt(p.mrp - p.price)}</span></div>
+        <div class="prate"><span class="stars">${SS.stars(p.rating)}</span> ${p.rating} · sample rating</div>
+        <div class="pprice"><span class="now">${SS.fmt(p.price)}</span><span class="save">demo price</span></div>
       </div>
     </a>`;
   }
@@ -131,12 +131,14 @@
     // reveal-on-scroll
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); } }), { threshold: .12 });
     document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+    setTimeout(() => document.querySelectorAll(".reveal").forEach(el => el.classList.add("vis")), 900);
     const bt = document.querySelector(".back-top");
     addEventListener("scroll", () => { if (bt) bt.style.display = scrollY > 500 ? "flex" : "none"; }, { passive: true });
   }
   window.SS.observeReveals = function(){
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); } }), { threshold: .12 });
     document.querySelectorAll(".reveal:not(.vis)").forEach(el => io.observe(el));
+    setTimeout(() => document.querySelectorAll(".reveal").forEach(el => el.classList.add("vis")), 900);
   };
   document.addEventListener("DOMContentLoaded", shell);
 })();
