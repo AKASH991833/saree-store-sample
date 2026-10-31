@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Saree Sansar — Handpicked Sarees for Every Occasion</title>
-<meta name="description" content="Saree Sansar online store design sample — silk, Banarasi, bridal and party sarees.">
+<meta name="description" content="Saree Sansar online store design sample — sarees, kids' clothing and cosmetics.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=6">
+<link rel="stylesheet" href="assets/css/style.css?v=7">
 </head>
 <body data-page="home">
 
@@ -15,7 +15,7 @@
     <div>
       <span class="hero-kicker">New festive collection</span>
       <h1>Every drape tells a <em>story of elegance</em></h1>
-      <p>From heirloom Banarasi silks to feather-light everyday chiffons — explore sarees handpicked for weddings, festivals and every beautiful day in between.</p>
+      <p>From heirloom Banarasi silks to kids' festive wear and everyday cosmetics — explore sarees, clothing and beauty picks handpicked for weddings, festivals and every beautiful day in between.</p>
       <div class="hero-cta">
         <a class="btn btn-maroon" href="shop.html">Shop all sarees</a>
         <a class="btn btn-outline" href="shop.html?cat=Bridal">Bridal collection</a>
@@ -43,7 +43,7 @@
 <section class="block"><div class="container">
   <div class="sec-head"><span class="kick">Most loved</span><h2>Bestsellers</h2><div class="flourish">✦</div></div>
   <div class="pgrid" id="bestGrid"></div>
-  <div style="text-align:center;margin-top:2rem"><a class="btn btn-outline" href="shop.html">View all sarees</a></div>
+  <div style="text-align:center;margin-top:2rem"><a class="btn btn-outline" href="shop.html">View all products</a></div>
 </div></section>
 
 <section class="block"><div class="container">
@@ -51,14 +51,14 @@
   <div class="pgrid" id="newGrid"></div>
 </div></section>
 
-<script src="assets/js/data.js?v=6"></script>
-<script src="assets/js/main.js?v=6"></script>
+<script src="assets/js/data.js?v=7"></script>
+<script src="assets/js/main.js?v=7"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   t1.innerHTML = SS.svg.truck; t2.innerHTML = SS.svg.swap; t3.innerHTML = SS.svg.shield; t4.innerHTML = SS.svg.gem;
-  const catImgs = {Silk:"p02-kanjivaram-green", Banarasi:"p01-banarasi-maroon", Bridal:"p06-bridal-crimson", Georgette:"p03-georgette-rose", Cotton:"p04-cotton-ivory", "Party Wear":"p11-net-black"};
+  const catImgs = {Silk:"p02-kanjivaram-green", Banarasi:"p01-banarasi-maroon", Bridal:"p06-bridal-crimson", Georgette:"p03-georgette-rose", Cotton:"p04-cotton-ivory", "Party Wear":"p11-net-black", "Kids' Wear":"k01-lehenga-pink", Cosmetics:"c01-lipstick-set"};
   catGrid.innerHTML = Object.entries(catImgs).map(([c,img]) =>
-    `<a class="cat-tile reveal" href="shop.html?cat=${encodeURIComponent(c)}"><img loading="lazy" src="assets/img/${img}.jpg" alt="${c} sarees"><span>${c}</span></a>`).join("");
+    `<a class="cat-tile reveal" href="shop.html?cat=${encodeURIComponent(c)}"><img loading="lazy" src="assets/img/${img}.jpg" alt="${c}"><span>${c}</span></a>`).join("");
   bestGrid.innerHTML = [...PRODUCTS].sort((a,b) => b.rating*b.ratings - a.rating*a.ratings).slice(0,4).map(SS.cardHTML).join("");
   newGrid.innerHTML = PRODUCTS.filter(p => p.badge === "New" || p.badge === "Trending").concat(PRODUCTS.filter(p=>!["New","Trending"].includes(p.badge))).slice(0,4).map(SS.cardHTML).join("");
   SS.observeReveals();

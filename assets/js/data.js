@@ -1,7 +1,7 @@
 /* Design sample for the Saree Sansar online store (public name approved by the shop owner). Everything is placeholder: products, prices, ratings and AI-generated photos are demo content, not actual shop inventory. */
 const SHOP = {
   name: "Saree Sansar",
-  tagline: "Online saree store — design sample",
+  tagline: "Sarees · Kids · Cosmetics — design sample",
   whatsapp: "", // connect once the shop's public number is confirmed
   demo: true
 };
@@ -103,9 +103,79 @@ const PRODUCTS = [
     desc: "Minimal sage green linen with a whisper of gold at the edge. Cool, crisp and effortlessly modern — for those who love quiet elegance.",
     highlights: ["Pure linen", "Minimal woven gold edge", "Includes blouse piece", "Breathable all-day comfort"]
   }
+,
+  {
+    id: "k01", name: "Pink & Gold Festive Lehenga Choli (Girls)", category: "Kids' Wear",
+    fabric: "Net & satin", color: "Pink", price: 1299,
+    rating: 4.5, ratings: 96, img: "assets/img/k01-lehenga-pink.jpg",
+    badge: "New",
+    desc: "A twirl-ready festive lehenga choli in bright pink with gold accents and a matching dupatta. Made for weddings, Diwali and school functions.",
+    highlights: ["Three-piece set: lehenga, choli, dupatta", "Size range 4-10 years", "Soft inner lining for comfort", "Dry clean only"],
+    specs: [["Size range","4-10 years"],["Care","Dry clean only"]]
+  },
+  {
+    id: "k02", name: "Sky Blue Cotton Kurta Pajama (Boys)", category: "Kids' Wear",
+    fabric: "Cotton", color: "Blue", price: 699,
+    rating: 4.3, ratings: 58, img: "assets/img/k02-kurta-blue.jpg",
+    desc: "A breezy cotton kurta pajama in sky blue with small printed motifs. Easy everyday ethnic wear for boys.",
+    highlights: ["Two-piece set: kurta + pajama", "Size range 1-8 years", "Breathable pure cotton", "Machine wash"],
+    specs: [["Size range","1-8 years"],["Care","Machine wash"]]
+  },
+  {
+    id: "k03", name: "Yellow Floral Cotton Frock", category: "Kids' Wear",
+    fabric: "Cotton", color: "Yellow", price: 549,
+    rating: 4.6, ratings: 143, img: "assets/img/k03-frock-yellow.jpg",
+    badge: "Trending",
+    desc: "A sunny yellow frock in soft floral cotton with frill sleeves. Light, playful and made for all-day wear.",
+    highlights: ["Size range 2-6 years", "Soft floral cotton", "Frill sleeves, back button closure", "Machine wash"],
+    specs: [["Size range","2-6 years"],["Care","Machine wash"]]
+  },
+  {
+    id: "k04", name: "Boys Denim & Checked Shirt Set", category: "Kids' Wear",
+    fabric: "Denim & cotton", color: "Blue", price: 899,
+    rating: 4.4, ratings: 77, img: "assets/img/k04-denim-set.jpg",
+    desc: "A smart casual combo: checked cotton shirt with stretchy denim jeans. Ready for birthdays and outings.",
+    highlights: ["Two-piece set: shirt + jeans", "Size range 3-12 years", "Elastic waist jeans", "Machine wash"],
+    specs: [["Size range","3-12 years"],["Care","Machine wash"]]
+  },
+  {
+    id: "c01", name: "Rose Gold Lipstick & Compact Set", category: "Cosmetics",
+    fabric: "Makeup combo", color: "Rose", price: 499,
+    rating: 4.5, ratings: 210, img: "assets/img/c01-lipstick-set.jpg",
+    badge: "Bestseller",
+    desc: "An everyday makeup duo: a creamy lipstick with a pressed compact in rose gold packaging.",
+    highlights: ["Lipstick + pressed compact", "Assorted shades available", "Check shade availability in chat"],
+    specs: [["Contents","Lipstick + compact"],["Shade","Assorted"]]
+  },
+  {
+    id: "c02", name: "Kajal & Eyeliner Duo", category: "Cosmetics",
+    fabric: "Eye makeup", color: "Black", price: 199,
+    rating: 4.6, ratings: 342, img: "assets/img/c02-kajal.jpg",
+    badge: "New",
+    desc: "A smudge-friendly kajal and eyeliner duo for everyday definition. Compact and travel-ready.",
+    highlights: ["Kajal pencil + liquid eyeliner", "Deep black", "Check availability in chat"],
+    specs: [["Contents","Kajal + eyeliner"],["Shade","Black"]]
+  },
+  {
+    id: "c03", name: "Assorted Nail Polish Set (6 Shades)", category: "Cosmetics",
+    fabric: "Nail enamel", color: "Multi", price: 299,
+    rating: 4.2, ratings: 88, img: "assets/img/c03-nailpolish.jpg",
+    desc: "Six bright nail enamel shades in one gift-ready set. Quick-dry glossy finish.",
+    highlights: ["Set of 6 assorted shades", "Quick-dry glossy finish", "Gift-ready box", "Check shades in chat"],
+    specs: [["Contents","6 nail polishes"],["Shades","Assorted"]]
+  },
+  {
+    id: "c04", name: "Face Cream & Serum Combo", category: "Cosmetics",
+    fabric: "Skincare combo", color: "Pastel", price: 649,
+    rating: 4.7, ratings: 156, img: "assets/img/c04-skincare.jpg",
+    badge: "Premium",
+    desc: "A daily skincare pairing: a light face cream with a hydrating serum in pastel packaging.",
+    highlights: ["Face cream + hydrating serum", "Daily use combo", "Check availability in chat"],
+    specs: [["Contents","Cream + serum"]]
+  }
 ];
 
-const CATEGORIES = ["All", "Silk", "Banarasi", "Bridal", "Georgette", "Cotton", "Organza", "Chiffon", "Bandhani", "Chanderi", "Party Wear", "Linen"];
+const CATEGORIES = ["All", "Silk", "Banarasi", "Bridal", "Georgette", "Cotton", "Organza", "Chiffon", "Bandhani", "Chanderi", "Party Wear", "Linen", "Kids' Wear", "Cosmetics"];
 
 const DEMO_REVIEWS = {
   p01: [["Priya S.", 5, "The zari work is stunning in person. Wore it to my sister's wedding."], ["Meena K.", 4, "Rich colour, exactly like the photos. Blouse piece included."]],

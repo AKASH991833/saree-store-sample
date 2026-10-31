@@ -82,7 +82,7 @@
         <div class="container hd-main">
           <a class="logo" href="index.html"><span class="l1">Saree</span> <span class="l2">Sansar</span><small>${SHOP.tagline}</small></a>
           <form class="search-wrap" action="shop.html" method="get">
-            <input name="q" placeholder="Search sarees, fabrics, colours…" aria-label="Search">
+            <input name="q" placeholder="Search sarees, kids, cosmetics…" aria-label="Search">
             <button type="submit">${""}<span>Search</span>&#128269;</button>
           </form>
           <div class="hd-actions">
@@ -99,10 +99,10 @@
         <div class="container ft-grid">
           <div class="ft-brand">
             <a class="logo" href="index.html"><span class="l1">Saree</span> <span class="l2">Sansar</span></a>
-            <p>Handpicked sarees for every occasion — from daily elegance to bridal grandeur. This is a design sample of the upcoming online store.</p>
+            <p>Sarees, kids' clothing and cosmetics for every occasion. This is a design sample of the upcoming online store.</p>
           </div>
           <div><h4>Shop</h4>
-            <a href="shop.html">All sarees</a><a href="shop.html?cat=Silk">Silk</a><a href="shop.html?cat=Bridal">Bridal</a><a href="shop.html?cat=Party%20Wear">Party wear</a>
+            <a href="shop.html">All products</a><a href="shop.html?cat=Silk">Silk</a><a href="shop.html?cat=Bridal">Bridal</a><a href="shop.html?cat=Party%20Wear">Party wear</a><a href="shop.html?cat=Kids%27%20Wear">Kids' wear</a><a href="shop.html?cat=Cosmetics">Cosmetics</a>
           </div>
           <div><h4>Help</h4>
             <a href="cart.html">Your cart</a><a href="checkout.html">Checkout</a><a href="#" onclick="SS.toast('Sample only — policies will be published with the live store');return false">Returns &amp; exchange</a>

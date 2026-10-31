@@ -5,12 +5,12 @@
 <title>Order on WhatsApp — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=6">
+<link rel="stylesheet" href="assets/css/style.css?v=7">
 </head>
 <body data-page="cart">
 <div class="container" id="coRoot"></div>
-<script src="assets/js/data.js?v=6"></script>
-<script src="assets/js/main.js?v=6"></script>
+<script src="assets/js/data.js?v=7"></script>
+<script src="assets/js/main.js?v=7"></script>
 <script>
 function waOrder(){
   const c = SS.getCart();
@@ -23,7 +23,7 @@ function waOrder(){
 }
 function renderCheckout(){
   const c = SS.getCart();
-  if (!c.length){ coRoot.innerHTML = `<div class="empty"><div class="serif">Nothing to order yet</div><p>Add a saree to your cart first.</p><br><a class="btn btn-maroon" href="shop.html">Shop sarees</a></div>`; return; }
+  if (!c.length){ coRoot.innerHTML = `<div class="empty"><div class="serif">Nothing to order yet</div><p>Add something to your cart first.</p><br><a class="btn btn-maroon" href="shop.html">Shop now</a></div>`; return; }
   let mrp = 0, total = 0;
   const rows = c.map(l => {
     const p = SS.prod(l.id); if (!p) return "";

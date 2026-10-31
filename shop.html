@@ -5,7 +5,7 @@
 <title>Shop Sarees — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=6">
+<link rel="stylesheet" href="assets/css/style.css?v=7">
 </head>
 <body data-page="shop">
 <div class="container shop-wrap">
@@ -32,8 +32,8 @@
     <div class="pgrid" id="grid"></div>
   </main>
 </div>
-<script src="assets/js/data.js?v=6"></script>
-<script src="assets/js/main.js?v=6"></script>
+<script src="assets/js/data.js?v=7"></script>
+<script src="assets/js/main.js?v=7"></script>
 <script>
 const qs = new URLSearchParams(location.search);
 let state = { cats: new Set(qs.get("cat") ? [qs.get("cat")] : []), prices: new Set(), colors: new Set(), q: (qs.get("q")||"").toLowerCase(), wish: qs.get("wish") === "1" };
@@ -70,14 +70,14 @@ function renderShop(){
 
   else if (s === "rate") list.sort((a,b) => b.rating-a.rating);
   else list.sort((a,b) => b.rating*b.ratings - a.rating*a.ratings);
-  count.textContent = `${list.length} saree${list.length===1?"":"s"}${state.q?` for “${state.q}”`:""}${state.wish?" in your wishlist":""}`;
+  count.textContent = `${list.length} product${list.length===1?"":"s"}${state.q?` for “${state.q}”`:""}${state.wish?" in your wishlist":""}`;
   const chips = [];
   state.cats.forEach(c => chips.push(c)); state.colors.forEach(c => chips.push(c));
   state.prices.forEach(v => chips.push(PRICES.find(x=>x[0]===v)[1]));
   chipRow = chips.map(c => `<span class="chip on">${c}</span>`).join("");
   chipsEl = document.getElementById("chips"); chipsEl.innerHTML = chipRow;
   grid.innerHTML = list.length ? list.map(SS.cardHTML).join("") :
-    `<div class="empty" style="grid-column:1/-1"><div class="serif">No sarees match</div><p>Try clearing a filter or two.</p></div>`;
+    `<div class="empty" style="grid-column:1/-1"><div class="serif">No products match</div><p>Try clearing a filter or two.</p></div>`;
   SS.observeReveals();
   filters.classList.remove("open");
 }
