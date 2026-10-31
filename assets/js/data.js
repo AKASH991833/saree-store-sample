@@ -1,6 +1,6 @@
-/* Saree Studio — generic design sample for an online saree store. Everything is placeholder: products, prices, ratings and AI-generated photos are demo content, not any real shop inventory or branding. */
+/* Design sample for the Saree Sansar online store (public name approved by the shop owner). Everything is placeholder: products, prices, ratings and AI-generated photos are demo content, not actual shop inventory. */
 const SHOP = {
-  name: "Saree Studio",
+  name: "Saree Sansar",
   tagline: "Online saree store — design sample",
   whatsapp: "", // connect once the shop's public number is confirmed
   demo: true

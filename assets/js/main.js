@@ -1,4 +1,4 @@
-/* Shared shell + cart store for the Saree Studio design sample */
+/* Shared shell + cart store for the Saree Sansar design sample */
 (function(){
   const SVG = {
     cart:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 3h2l2.4 12.2a1.6 1.6 0 0 0 1.6 1.3h7.7a1.6 1.6 0 0 0 1.6-1.3L20 7H6"/></svg>',
@@ -80,7 +80,7 @@
       <div class="demo-ribbon">Design sample — <b>AI-generated demo photos, demo prices</b> — not a live store, no real orders</div>
       <header class="site">
         <div class="container hd-main">
-          <a class="logo" href="index.html"><span class="l1">Saree</span> <span class="l2">Studio</span><small>${SHOP.tagline}</small></a>
+          <a class="logo" href="index.html"><span class="l1">Saree</span> <span class="l2">Sansar</span><small>${SHOP.tagline}</small></a>
           <form class="search-wrap" action="shop.html" method="get">
             <input name="q" placeholder="Search sarees, fabrics, colours…" aria-label="Search">
             <button type="submit">${""}<span>Search</span>&#128269;</button>
@@ -98,7 +98,7 @@
       <footer class="site">
         <div class="container ft-grid">
           <div class="ft-brand">
-            <a class="logo" href="index.html"><span class="l1">Saree</span> <span class="l2">Studio</span></a>
+            <a class="logo" href="index.html"><span class="l1">Saree</span> <span class="l2">Sansar</span></a>
             <p>Handpicked sarees for every occasion — from daily elegance to bridal grandeur. This is a design sample of the upcoming online store.</p>
           </div>
           <div><h4>Shop</h4>
@@ -113,7 +113,7 @@
           </div>
         </div>
         <div class="container ft-bottom">
-          <span>© 2026 Saree Studio — design sample</span>
+          <span>© 2026 Saree Sansar — design sample</span>
           <span>Demo catalog · no real orders or payments</span>
         </div>
       </footer>

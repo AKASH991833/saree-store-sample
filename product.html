@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Saree — Saree Studio</title>
+<title>Saree — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=5">
+<link rel="stylesheet" href="assets/css/style.css?v=6">
 </head>
 <body data-page="shop">
 <div class="container">
@@ -36,8 +36,8 @@
     <div class="pgrid" id="similar"></div>
   </section>
 </div>
-<script src="assets/js/data.js?v=5"></script>
-<script src="assets/js/main.js?v=5"></script>
+<script src="assets/js/data.js?v=6"></script>
+<script src="assets/js/main.js?v=6"></script>
 <script>
 const id = new URLSearchParams(location.search).get("id");
 const p = SS.prod(id) || PRODUCTS[0];
@@ -51,7 +51,7 @@ function waSingle(){
   else SS.toast("Sample only — the shop's WhatsApp number is not connected yet");
 }
 document.addEventListener("DOMContentLoaded", () => {
-  document.title = p.name + " — Saree Studio";
+  document.title = p.name + " — Saree Sansar";
   crumbCat.innerHTML = `<a href="shop.html?cat=${encodeURIComponent(p.category)}">${p.category}</a>`;
   pdImg.src = p.img; pdImg.alt = p.name;
   pdName.textContent = p.name;
