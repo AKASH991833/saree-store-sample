@@ -213,3 +213,18 @@ const DEMO_REVIEWS = {
   p06: [["Anjali R.", 5, "Felt like a queen on my wedding day. Worth every rupee."], ["Kavita D.", 5, "Embroidery is heavy and gorgeous."]],
   p07: [["Sneha M.", 5, "So dreamy! Got compliments all evening."], ["Ritu P.", 4, "Beautiful colour, slightly sheer so wear a good petticoat."]]
 };
+
+/* Owner catalog manager overlay (added in v11): unpublished edits made on the Owner page
+   live in this browser's localStorage only. They are applied here so the owner can preview
+   changes across the site on THIS device. Customers see only the published catalog above.
+   Guarded so the pv-page generator (node, no localStorage) still works. */
+try {
+  if (typeof localStorage !== "undefined") {
+    const _ov = JSON.parse(localStorage.getItem("ss_owner_v1") || "null");
+    if (_ov) {
+      (_ov.hidden || []).forEach(id => { const i = PRODUCTS.findIndex(p => p.id === id); if (i >= 0) PRODUCTS.splice(i, 1); });
+      Object.entries(_ov.edits || {}).forEach(([id, patch]) => { const p = PRODUCTS.find(x => x.id === id); if (p) Object.assign(p, patch); });
+      (_ov.added || []).forEach(p => { if (!PRODUCTS.find(x => x.id === p.id)) PRODUCTS.push(Object.assign({ _local: true }, p)); });
+    }
+  }
+} catch (e) { /* broken local data must never break the shop */ }

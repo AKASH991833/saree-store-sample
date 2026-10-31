@@ -60,10 +60,10 @@
       clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 2200);
     },
     siteUrl: "https://akash991833.github.io/saree-store-sample/",
-    productLink: p => SS.siteUrl + "pv-" + p.id + ".html",
+    productLink: p => SS.siteUrl + (p._local ? "product.html?id=" + p.id : "pv-" + p.id + ".html"),
     async sharePhoto(id, extraText){
       const p = SS.prod(id); if (!p) return;
-      const msg = (extraText || "") + "\n" + p.name + " (Code: " + p.id + ") — " + SS.fmt(p.price) + " demo price\n" + SS.productLink(p);
+      const msg = (extraText || "") + "\n" + p.name + " (Code: " + p.id + ") — " + SS.fmt(p.price) + (p._local ? "" : " demo price") + "\n" + SS.productLink(p);
       try {
         const blob = await (await fetch(p.img)).blob();
         const file = new File([blob], p.id + "-photo.jpg", { type: blob.type || "image/jpeg" });
@@ -275,7 +275,7 @@
     const p = SS.prod(id);
     const opt = SS.chosenOpt(document.querySelector(".qv-modal"));
     const optTxt = opt && p.options ? ` (${p.options.label}: ${opt})` : "";
-    const msg = `Namaste! I would like to order: ${p.name}${optTxt} x 1 — ${SS.fmt(p.price)} (demo price).\nCode: ${p.id}\nProduct page + photo: ${SS.siteUrl}pv-${p.id}.html\nPlease confirm availability and final total.`;
+    const msg = `Namaste! I would like to order: ${p.name}${optTxt} x 1 — ${SS.fmt(p.price)}${p._local ? "" : " (demo price)"}.\nCode: ${p.id}\nProduct page + photo: ${SS.productLink(p)}\nPlease confirm availability and final total.`;
     const url = SS.whatsappOrder(msg);
     if (url) open(url, "_blank");
     else SS.toast("WhatsApp ordering is not available in this preview");
