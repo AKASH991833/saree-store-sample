@@ -29,7 +29,9 @@
         <span class="qty"><button onclick="chQty(-1)">−</button><span id="qty">1</span><button onclick="chQty(1)">+</button></span>
         <button class="btn btn-outline" id="addBtn" onclick="addCart()">Add to cart</button>
         <button class="btn btn-maroon" id="waBtn" onclick="waSingle()">Order on WhatsApp</button>
+        <button class="btn btn-outline" id="photoBtn" onclick="sharePhoto()" title="Attaches the real photo through your phone's share panel">📷 Send photo too</button>
       </div>
+      <p style="font-size:.72rem;color:var(--muted);margin-top:.45rem">Order on WhatsApp writes the full message with a photo link. "Send photo too" attaches the actual photo through your phone's share panel - you pick WhatsApp and press send yourself.</p>
       <div class="pd-hl"><h4>Highlights</h4><ul id="hl"></ul></div>
       <p style="margin-top:1rem;color:#453a3d;font-size:.94rem" id="pdDesc"></p>
       <div class="reviews" id="reviews"></div>
@@ -47,7 +49,7 @@
 <script src="assets/js/data.js?v=8"></script>
 <script src="assets/js/main.js?v=8"></script>
 <script>
-const id = new URLSearchParams(location.search).get("id");
+const id = window.PID || new URLSearchParams(location.search).get("id");
 const p = SS.prod(id) || PRODUCTS[0];
 let q = 1;
 function chQty(d){ q = Math.max(1, Math.min(10, q + d)); qty.textContent = q; }
@@ -55,11 +57,17 @@ function addCart(){
   if (p.stock === "out") { SS.toast("Sold out in this demo"); return; }
   SS.addToCart(p.id, q, document.getElementById("optVal").value);
 }
+function sharePhoto(){
+  if (p.stock === "out") { SS.toast("Sold out in this demo"); return; }
+  const opt = document.getElementById("optVal").value;
+  const optTxt = opt && p.options ? ` (${p.options.label}: ${opt}) x ${q}` : ` x ${q}`;
+  SS.sharePhoto(p.id, "Namaste! I would like to order this:" + optTxt.replace("x", "- qty"));
+}
 function waSingle(){
   if (p.stock === "out") { SS.toast("Sold out in this demo"); return; }
   const opt = document.getElementById("optVal").value;
   const optTxt = opt && p.options ? ` (${p.options.label}: ${opt})` : "";
-  const msg = `Namaste! I would like to order: ${p.name}${optTxt} x ${q} — ${SS.fmt(p.price*q)} (demo price). Please confirm availability and final total.\nPhoto: ${SS.siteUrl}product.html?id=${p.id}`;
+  const msg = `Namaste! I would like to order: ${p.name}${optTxt} x ${q} — ${SS.fmt(p.price*q)} (demo price).\nCode: ${p.id}\nProduct page + photo: ${SS.productLink(p)}\nPlease confirm availability and final total.`;
   const url = SS.whatsappOrder(msg);
   if (url) open(url, "_blank");
   else SS.toast("WhatsApp ordering is not available in this preview");

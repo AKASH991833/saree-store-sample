@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="Saree Sansar (design sample)">
+<meta property="og:title" content="Boys Denim & Checked Shirt Set — demo price ₹899">
+<meta property="og:description" content="Design sample product page. AI-generated demo photo and demo price - not actual shop inventory. Code: k04">
+<meta property="og:image" content="https://akash991833.github.io/saree-store-sample/assets/img/k04-denim-set.jpg">
+<meta property="og:image:width" content="1086">
+<meta property="og:image:height" content="1448">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://akash991833.github.io/saree-store-sample/assets/img/k04-denim-set.jpg">
+<script>window.PID="k04";</script><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product — Saree Sansar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
+</head>
+<body data-page="shop">
+<div class="container">
+  <nav class="crumbs"><a href="index.html">Home</a> › <a href="shop.html">Shop</a> › <span id="crumbCat"></span></nav>
+  <div class="pd-wrap">
+    <div class="pd-img"><div class="frame zoom"><img id="pdImg" src="" alt=""></div><div class="zoom-hint">Hover to zoom</div></div>
+    <div class="pd-info opt-scope">
+      <input type="hidden" class="opt-value" id="optVal" value="">
+      <h1 id="pdName"></h1>
+      <div class="pd-rate" id="pdRate"></div>
+      <div class="pd-price" id="pdPrice"></div>
+      <div class="tax-note">Sample price · AI-generated demo photo, not actual inventory</div>
+      <div class="stock-line" id="stockLine"></div>
+      <div id="optBox"></div>
+      <div class="offer-box"><h4>Sample offers</h4><ul>
+        <li>Prices shown are demo prices for layout preview</li>
+        <li>Delivery and exchange policies are not set in this sample - they will be published with the live store</li>
+      </ul></div>
+      <table class="spec-table" id="specs"></table>
+      <div class="pd-actions">
+        <span class="qty"><button onclick="chQty(-1)">−</button><span id="qty">1</span><button onclick="chQty(1)">+</button></span>
+        <button class="btn btn-outline" id="addBtn" onclick="addCart()">Add to cart</button>
+        <button class="btn btn-maroon" id="waBtn" onclick="waSingle()">Order on WhatsApp</button>
+        <button class="btn btn-outline" id="photoBtn" onclick="sharePhoto()" title="Attaches the real photo through your phone's share panel">📷 Send photo too</button>
+      </div>
+      <p style="font-size:.72rem;color:var(--muted);margin-top:.45rem">Order on WhatsApp writes the full message with a photo link. "Send photo too" attaches the actual photo through your phone's share panel - you pick WhatsApp and press send yourself.</p>
+      <div class="pd-hl"><h4>Highlights</h4><ul id="hl"></ul></div>
+      <p style="margin-top:1rem;color:#453a3d;font-size:.94rem" id="pdDesc"></p>
+      <div class="reviews" id="reviews"></div>
+    </div>
+  </div>
+  <div id="recentBox"></div>
+  <section class="block"><div class="sec-head"><span class="kick">You may also like</span><h2>Similar products</h2><div class="flourish">✦</div></div>
+    <div class="pgrid" id="similar"></div>
+  </section>
+</div>
+<div class="sticky-actions" id="stickyBar">
+  <button class="btn btn-outline" onclick="addCart()">Add to cart</button>
+  <button class="btn btn-maroon" onclick="waSingle()">Order on WhatsApp</button>
+</div>
+<script src="assets/js/data.js?v=8"></script>
+<script src="assets/js/main.js?v=8"></script>
+<script>
+const id = window.PID || new URLSearchParams(location.search).get("id");
+const p = SS.prod(id) || PRODUCTS[0];
+let q = 1;
+function chQty(d){ q = Math.max(1, Math.min(10, q + d)); qty.textContent = q; }
+function addCart(){
+  if (p.stock === "out") { SS.toast("Sold out in this demo"); return; }
+  SS.addToCart(p.id, q, document.getElementById("optVal").value);
+}
+function sharePhoto(){
+  if (p.stock === "out") { SS.toast("Sold out in this demo"); return; }
+  const opt = document.getElementById("optVal").value;
+  const optTxt = opt && p.options ? ` (${p.options.label}: ${opt}) x ${q}` : ` x ${q}`;
+  SS.sharePhoto(p.id, "Namaste! I would like to order this:" + optTxt.replace("x", "- qty"));
+}
+function waSingle(){
+  if (p.stock === "out") { SS.toast("Sold out in this demo"); return; }
+  const opt = document.getElementById("optVal").value;
+  const optTxt = opt && p.options ? ` (${p.options.label}: ${opt})` : "";
+  const msg = `Namaste! I would like to order: ${p.name}${optTxt} x ${q} — ${SS.fmt(p.price*q)} (demo price).\nCode: ${p.id}\nProduct page + photo: ${SS.productLink(p)}\nPlease confirm availability and final total.`;
+  const url = SS.whatsappOrder(msg);
+  if (url) open(url, "_blank");
+  else SS.toast("WhatsApp ordering is not available in this preview");
+}
+document.addEventListener("DOMContentLoaded", () => {
+  document.title = p.name + " — Saree Sansar";
+  crumbCat.innerHTML = `<a href="shop.html?cat=${encodeURIComponent(p.category)}">${p.category}</a>`;
+  pdImg.src = p.img; pdImg.alt = p.name;
+  pdName.textContent = p.name;
+  pdRate.innerHTML = `<span class="pill">${p.rating} ★</span><span>${p.ratings} sample ratings</span>`;
+  pdPrice.innerHTML = `<span class="now">${SS.fmt(p.price)}</span><span class="off">demo price</span>`;
+  stockLine.className = "stock-line " + p.stock;
+  stockLine.textContent = p.stock === "out" ? "Sold out in this demo" : p.stock === "low" ? "Few left (demo stock)" : "In stock (demo stock)";
+  if (p.stock === "out"){ addBtn.disabled = waBtn.disabled = true; stickyBar.style.display = "none"; }
+  optBox.innerHTML = SS.optChips(p);
+  if (p.options) document.getElementById("optVal").value = p.options.choices[0];
+  specs.innerHTML = [["Material / Type",p.fabric],["Colour",p.color],["Collection",p.category]].concat(p.specs || [["Blouse piece","Included (unstitched)"],["Care","See highlights"]]).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("");
+  hl.innerHTML = p.highlights.map(h => `<li>${h}</li>`).join("");
+  pdDesc.textContent = p.desc;
+  const rv = DEMO_REVIEWS[p.id] || [["Happy customer", 4, "Lovely quality, exactly as shown. (sample review)"]];
+  reviews.innerHTML = `<h4 style="font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--maroon);margin-bottom:.4rem">Sample reviews</h4>` +
+    rv.map(r => `<div class="review"><div class="who">${r[0]} <span class="stars">${"★".repeat(r[1])}${"☆".repeat(5-r[1])}</span></div><p style="font-size:.88rem;color:#453a3d">${r[2]}</p></div>`).join("");
+  similar.innerHTML = PRODUCTS.filter(x => x.id !== p.id).sort((a,b) => (b.category===p.category)-(a.category===p.category)).slice(0,4).map(SS.cardHTML).join("");
+  SS.pushRecent(p.id);
+  recentBox.innerHTML = SS.recentHTML(p.id);
+  SS.observeReveals();
+  // hover zoom
+  const frame = document.querySelector(".frame.zoom");
+  frame.addEventListener("mousemove", e => {
+    const r = frame.getBoundingClientRect();
+    pdImg.style.transformOrigin = `${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`;
+    pdImg.style.transform = "scale(1.9)";
+  });
+  frame.addEventListener("mouseleave", () => { pdImg.style.transform = "scale(1)"; });
+});
+</script>
+</body>
+</html>

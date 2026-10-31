@@ -17,7 +17,7 @@ function orderText(){
   const lines = c.map(l => {
     const p = SS.prod(l.id); if (!p) return "";
     const optTxt = l.opt && p.options ? ` (${p.options.label}: ${l.opt})` : "";
-    return `• ${p.name}${optTxt} x ${l.qty} — ${SS.fmt(p.price*l.qty)}\n  Photo: ${SS.siteUrl}product.html?id=${p.id}`;
+    return `• ${p.name}${optTxt} x ${l.qty} — ${SS.fmt(p.price*l.qty)}\n  Code: ${p.id} | Photo + page: ${SS.productLink(p)}`;
   }).join("\n");
   const total = c.reduce((s,l) => { const p = SS.prod(l.id); return p ? s + p.price*l.qty : s; }, 0);
   const how = document.querySelector('input[name="how"]:checked')?.value || "Shop pickup";
@@ -32,6 +32,22 @@ function waOrder(){
   const url = SS.whatsappOrder(orderText());
   if (url) { open(url, "_blank"); }
   else { SS.toast("WhatsApp ordering is not available in this preview"); }
+}
+async function sharePhotos(){
+  const c = SS.getCart();
+  try {
+    const files = [];
+    for (const l of c){
+      const p = SS.prod(l.id); if (!p) continue;
+      const blob = await (await fetch(p.img)).blob();
+      files.push(new File([blob], p.id + "-photo.jpg", { type: blob.type || "image/jpeg" }));
+    }
+    if (files.length && navigator.canShare && navigator.canShare({ files })){
+      await navigator.share({ files, text: orderText(), title: "Saree Sansar order (demo)" });
+      return;
+    }
+  } catch(e){ if (e && e.name === "AbortError") return; }
+  SS.toast("Direct photo share needs a phone browser - order links show photo previews instead");
 }
 function copyOrder(){
   const done = () => SS.toast("Order text copied — paste it in any chat");
@@ -82,6 +98,7 @@ function renderCheckout(){
       <div class="srow total"><span>Total</span><span>${SS.fmt(total)}</span></div>
       <p style="font-size:.72rem;color:var(--muted);margin:.5rem 0 .8rem">All prices are demo prices for layout preview.</p>
       <button class="btn btn-maroon" style="width:100%" onclick="waOrder()">Send order on WhatsApp</button>
+      <button class="btn btn-outline" style="width:100%;margin-top:.55rem" onclick="sharePhotos()">📷 Send photos + order (share panel)</button>
       <button class="btn btn-outline" style="width:100%;margin-top:.55rem" onclick="copyOrder()">Copy order text</button>
       <p style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.6rem">Demo catalog — the shop confirms availability and the final total in chat; payment as usual (cash / UPI). Nothing is booked until the shop confirms.</p>
     </div>

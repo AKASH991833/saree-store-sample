@@ -60,6 +60,20 @@
       clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 2200);
     },
     siteUrl: "https://akash991833.github.io/saree-store-sample/",
+    productLink: p => SS.siteUrl + "pv-" + p.id + ".html",
+    async sharePhoto(id, extraText){
+      const p = SS.prod(id); if (!p) return;
+      const msg = (extraText || "") + "\n" + p.name + " (Code: " + p.id + ") — " + SS.fmt(p.price) + " demo price\n" + SS.productLink(p);
+      try {
+        const blob = await (await fetch(p.img)).blob();
+        const file = new File([blob], p.id + "-photo.jpg", { type: blob.type || "image/jpeg" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], text: msg, title: p.name });
+          return;
+        }
+      } catch(e){ if (e && e.name === "AbortError") return; }
+      SS.toast("Direct photo share needs a phone browser - the order link shows the photo preview instead");
+    },
     waGeneral(){
       const url = SS.whatsappOrder("Namaste! I have a question about a product at Saree Sansar.");
       if (url) open(url, "_blank");
@@ -261,7 +275,7 @@
     const p = SS.prod(id);
     const opt = SS.chosenOpt(document.querySelector(".qv-modal"));
     const optTxt = opt && p.options ? ` (${p.options.label}: ${opt})` : "";
-    const msg = `Namaste! I would like to order: ${p.name}${optTxt} x 1 — ${SS.fmt(p.price)} (demo price). Please confirm availability and final total.\nPhoto: ${SS.siteUrl}product.html?id=${p.id}`;
+    const msg = `Namaste! I would like to order: ${p.name}${optTxt} x 1 — ${SS.fmt(p.price)} (demo price).\nCode: ${p.id}\nProduct page + photo: ${SS.siteUrl}pv-${p.id}.html\nPlease confirm availability and final total.`;
     const url = SS.whatsappOrder(msg);
     if (url) open(url, "_blank");
     else SS.toast("WhatsApp ordering is not available in this preview");
