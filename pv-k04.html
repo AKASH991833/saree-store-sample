@@ -15,7 +15,7 @@
 <title>Product — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=12">
+<link rel="stylesheet" href="assets/css/style.css?v=13">
 <style>@media(max-width:640px){.back-top{display:none!important}}</style>
 </head>
 <body data-page="shop">
@@ -57,11 +57,11 @@
   <button class="btn btn-outline" onclick="addCart()">Add to cart</button>
   <button class="btn btn-maroon" onclick="waSingle()">Order on WhatsApp</button>
 </div>
-<script src="assets/js/data.js?v=12"></script>
-<script src="assets/js/main.js?v=12"></script>
+<script src="assets/js/data.js?v=13"></script>
+<script src="assets/js/main.js?v=13"></script>
 <script>
 const id = window.PID || new URLSearchParams(location.search).get("id");
-const p = SS.prod(id) || PRODUCTS[0];
+const p = SS.prod(id) || (id ? null : PRODUCTS[0]);
 let q = 1;
 function chQty(d){ q = Math.max(1, Math.min(10, q + d)); qty.textContent = q; }
 function addCart(){
@@ -78,12 +78,19 @@ function waSingle(){
   if (p.stock === "out") { SS.toast("Sold out in this demo"); return; }
   const opt = document.getElementById("optVal").value;
   const optTxt = opt && p.options ? ` (${p.options.label}: ${opt})` : "";
-  const msg = `Namaste! I would like to order: ${p.name}${optTxt} x ${q} — ${SS.fmt(p.price*q)}${p._local ? "" : " (demo price)"}.\nCode: ${p.id}\nProduct page + photo: ${SS.productLink(p)}\nPlease confirm availability and final total.`;
+  const msg = `Namaste! I would like to order: ${p.name}${optTxt} x ${q} — ${SS.fmt(p.price*q)} (demo price).\nCode: ${p.id}\nProduct page + photo: ${SS.productLink(p)}\nPlease confirm availability and final total.`;
   const url = SS.whatsappOrder(msg);
   if (url) open(url, "_blank");
   else SS.toast("WhatsApp ordering is not available in this preview");
 }
 document.addEventListener("DOMContentLoaded", () => {
+  if (!p) {
+    document.title = "Product not found — Saree Sansar";
+    document.querySelector(".pd-wrap").innerHTML = '<p style="padding:2.2rem 0;font-size:1rem;color:#453a3d;line-height:1.6">This link does not match any published product. It may be an unpublished preview that only works on the shop owner\'s device, or an outdated link. <a href="shop.html" style="color:var(--maroon);font-weight:600">Browse all products</a></p>';
+    document.getElementById("stickyBar").style.display = "none";
+    document.querySelector(".block").style.display = "none";
+    return;
+  }
   document.title = p.name + " — Saree Sansar";
   crumbCat.innerHTML = `<a href="shop.html?cat=${encodeURIComponent(p.category)}">${p.category}</a>`;
   pdImg.src = p.img; pdImg.alt = p.name;
@@ -93,6 +100,14 @@ document.addEventListener("DOMContentLoaded", () => {
   stockLine.className = "stock-line " + p.stock;
   stockLine.textContent = p.stock === "out" ? "Sold out in this demo" : p.stock === "low" ? "Few left (demo stock)" : "In stock (demo stock)";
   if (p.stock === "out"){ addBtn.disabled = waBtn.disabled = true; stickyBar.style.display = "none"; }
+  if (p._local){
+    const nb = document.createElement("div");
+    nb.style.cssText = "background:#fdf3e3;border:1px solid #e8d5ae;border-radius:12px;padding:.6rem .9rem;font-size:.85rem;color:#5c4a1f;margin:.4rem 0";
+    nb.innerHTML = "<b>Preview only</b> - this product is not published yet. This page and its link work only on this device until the product goes live.";
+    document.querySelector(".pd-info").prepend(nb);
+    addBtn.disabled = waBtn.disabled = photoBtn.disabled = true;
+    stickyBar.style.display = "none";
+  }
   optBox.innerHTML = SS.optChips(p);
   if (p.options) document.getElementById("optVal").value = p.options.choices[0];
   specs.innerHTML = [["Material / Type",p.fabric],["Colour",p.color],["Collection",p.category]].concat(p.specs || [["Blouse piece","Included (unstitched)"],["Care","See highlights"]]).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("");

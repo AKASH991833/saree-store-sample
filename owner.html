@@ -5,7 +5,7 @@
 <title>Owner Catalog Manager — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=12">
+<link rel="stylesheet" href="assets/css/style.css?v=13">
 <style>
 .own-note{background:#fdf3e3;border:1px solid #e8d5ae;border-radius:12px;padding:.8rem 1rem;font-size:.86rem;color:#5c4a1f;margin-bottom:1rem}
 .own-note b{color:#7a5c14}
@@ -29,10 +29,10 @@
 </head>
 <body data-page="owner">
 <div class="container">
-  <div class="owner-banner">OWNER CATALOG MANAGER · Saves on this device · Publish sends changes to Instinct to update the live site</div>
+  <div class="owner-banner">OWNER CATALOG MANAGER · Saves on this device only · Nothing is sent automatically - publishing is your deliberate message to Instinct</div>
   <h2 class="serif" style="color:var(--maroon-dark);margin:.4rem 0 .2rem">Manage products &amp; stock</h2>
 
-  <div class="own-note"><b>How this works:</b> everything you change here is saved in this browser only, so you can preview it on the shop pages of this device. Customers see your changes only after you publish: tap <b>Publish updates</b> below and send the update file in your Instinct WhatsApp chat (the same chat where this website was made). New product photos go in that chat too, with their product codes. The site then updates for everyone. There is no login on this page yet — changes stay on each device until published.</div>
+  <div class="own-note"><b>How this works:</b> everything you change here is saved in this browser only, so you can preview it on the shop pages of this device. Customers see your changes only after you publish: tap <b>Publish updates</b> below to download an update file - nothing is sent by this page - then send that file yourself in your Instinct WhatsApp chat (the same chat where this website was made). New product photos go in that chat too, with their product codes. The site then updates for everyone. There is no login on this page yet — changes stay on each device until published.</div>
 
   <div class="stat-row" id="statRow"></div>
 
@@ -75,10 +75,11 @@
     <div id="ordersBox"></div>
   </section>
 </div>
-<script src="assets/js/data.js?v=12"></script>
-<script src="assets/js/main.js?v=12"></script>
+<script src="assets/js/data.js?v=13"></script>
+<script src="assets/js/main.js?v=13"></script>
 <script>
 const OVKEY = "ss_owner_v1";
+function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 const BASE_IDS = ["p01","p02","p03","p04","p05","p06","p07","p08","p09","p10","p11","p12","k01","k02","k03","k04","c01","c02","c03","c04"];
 function ovLoad(){ try { return JSON.parse(localStorage.getItem(OVKEY)) || {edits:{},added:[],hidden:[]}; } catch(e){ return {edits:{},added:[],hidden:[]}; } }
 function ovSave(o){ try { localStorage.setItem(OVKEY, JSON.stringify(o)); return true; } catch(e){ SS.toast("Storage full on this device - remove a photo or publish first"); return false; } }
@@ -109,8 +110,8 @@ function renderTbl(){
       const un = isEdited(p.id) ? `<span class="chip-unpub">unpublished</span>` : "";
       const imgSrc = p._local && p.img && p.img.startsWith("data:") ? p.img : p.img;
       return `<tr data-id="${p.id}">
-      <td class="st-name"><img src="${imgSrc}" alt=""> ${p.name}${un}</td>
-      <td>${p.category || ""}</td>
+      <td class="st-name"><img src="${imgSrc}" alt=""> ${esc(p.name)}${un}</td>
+      <td>${esc(p.category || "")}</td>
       <td>${SS.fmt(p.price)}</td>
       <td><button class="stock-pill ${p.stock}" style="border:0;cursor:pointer" data-act="cycle" title="Tap to change stock">${p.stock==="out"?"Sold out":p.stock==="low"?"Few left":"In stock"}</button></td>
       <td style="white-space:nowrap">
@@ -133,6 +134,8 @@ stockTbl && (stockTbl.parentElement.addEventListener("click", (ev)=>{
     if (ovSave(o)){ p.stock=nx; refresh(); }
   }
   if (b.dataset.act === "share"){
+    if (p._local){ SS.toast("Preview only - publish this product first; its page link does not work on other phones yet"); return; }
+    if (isEdited(p.id)) SS.toast("Note: the link shows the published version until your edits go live");
     navigator.clipboard ? navigator.clipboard.writeText(shareText(p)).then(()=>SS.toast("Share text copied - paste it anywhere")) : SS.toast("Copy not available in this browser");
   }
   if (b.dataset.act === "hide"){
@@ -147,12 +150,12 @@ function openEdit(tr, p){
   if (tr.nextSibling && tr.nextSibling.classList && tr.nextSibling.classList.contains("edit-row")){ tr.nextSibling.remove(); return; }
   const er = document.createElement("tr"); er.className="edit-row";
   er.innerHTML = `<td colspan="5"><div class="edit-grid">
-    <div class="full"><label>Name</label><input id="eName" value="${p.name.replace(/"/g,'&quot;')}"></div>
+    <div class="full"><label>Name</label><input id="eName" value="${esc(p.name)}"></div>
     <div><label>Price (₹)</label><input id="ePrice" type="number" min="1" step="1" value="${p.price}"></div>
-    <div><label>Section</label><input id="eCat" value="${(p.category||"").replace(/"/g,'&quot;')}"></div>
-    <div><label>Colour</label><input id="eColor" value="${(p.color||"").replace(/"/g,'&quot;')}"></div>
-    <div><label>Options (Label: choice, choice)</label><input id="eOpts" value="${p.options ? (p.options.label+": "+p.options.choices.join(", ")).replace(/"/g,'&quot;') : ""}"></div>
-    <div class="full"><label>Description</label><textarea id="eDesc">${p.desc||""}</textarea></div>
+    <div><label>Section</label><input id="eCat" value="${esc(p.category||"")}"></div>
+    <div><label>Colour</label><input id="eColor" value="${esc(p.color||"")}"></div>
+    <div><label>Options (Label: choice, choice)</label><input id="eOpts" value="${p.options ? esc(p.options.label+": "+p.options.choices.join(", ")) : ""}"></div>
+    <div class="full"><label>Description</label><textarea id="eDesc">${esc(p.desc||"")}</textarea></div>
     <div class="full"><button class="btn btn-primary" id="eSave">Save changes</button> <button class="btn btn-outline" id="eCancel">Cancel</button></div>
   </div></td>`;
   tr.after(er);
