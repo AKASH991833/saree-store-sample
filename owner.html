@@ -5,18 +5,18 @@
 <title>Owner View (Demo) — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=9">
+<link rel="stylesheet" href="assets/css/style.css?v=10">
 </head>
 <body data-page="owner">
 <div class="container">
   <div class="owner-banner">OWNER VIEW — DESIGN PREVIEW · Sample data only · Nothing here is connected, saved or live</div>
   <h2 class="serif" style="color:var(--maroon-dark);margin:.4rem 0 .2rem">Shop management, at a glance</h2>
-  <p style="color:#453a3d;font-size:.92rem;margin-bottom:1.2rem">This is how the owner side will feel in the live store: see orders as they arrive on WhatsApp, keep stock up to date, and edit products from a phone. In the real store this area sits behind an owner-only login — this preview has no login and changes nothing.</p>
+  <p style="color:#453a3d;font-size:.92rem;margin-bottom:1.2rem">This is how the owner side could feel in a later phase: keep stock up to date and manage products from a phone, behind an owner-only login. This preview has no login and changes nothing. Note: orders in the current build arrive only inside the shop's WhatsApp chat itself - a website-side order inbox like the sample below would need a separate backend + WhatsApp Business integration, and is later work, not part of the current build.</p>
 
   <div class="stat-row" id="statRow"></div>
 
   <section class="block" style="padding-top:0"><div class="sec-head"><span class="kick">Sample inbox</span><h2>Order requests (demo)</h2><div class="flourish">✦</div></div>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:.8rem">In the live store, each Order on WhatsApp message arrives in the shop's WhatsApp like these samples. Confirming happens in the chat itself — these buttons are illustrative only.</p>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:.8rem">In the current build, each Order on WhatsApp message arrives in the shop's WhatsApp chat, where confirming happens. The samples below show how those messages will read - this page is not connected to WhatsApp and these buttons are illustrative only.</p>
     <div id="ordersBox"></div>
   </section>
 
@@ -24,8 +24,8 @@
     <div class="tbl-wrap"><table class="stock-tbl" id="stockTbl"></table></div>
   </section>
 </div>
-<script src="assets/js/data.js?v=9"></script>
-<script src="assets/js/main.js?v=9"></script>
+<script src="assets/js/data.js?v=10"></script>
+<script src="assets/js/main.js?v=10"></script>
 <script>
 const SAMPLE_ORDERS = [
   { when: "Sample · 10:42 am", text: "Namaste! I would like to order: Royal Maroon Banarasi Silk Saree (Colour: Wine) x 1 — ₹4,999 (demo price). Code: p01. Product page + photo: (link). Preference: Shop pickup. Please confirm availability and final total. - plus the actual photo when the customer shares it from their phone." },

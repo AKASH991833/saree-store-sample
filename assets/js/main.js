@@ -72,7 +72,7 @@
           return;
         }
       } catch(e){ if (e && e.name === "AbortError") return; }
-      SS.toast("Direct photo share needs a phone browser - the order link shows the photo preview instead");
+      SS.toast("Direct photo share needs a supporting phone browser - the order message still carries the product page link");
     },
     waGeneral(){
       const url = SS.whatsappOrder("Namaste! I have a question about a product at Saree Sansar.");
