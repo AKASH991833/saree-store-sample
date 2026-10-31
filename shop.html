@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop Sarees — Saree Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="shop">
+<div class="container shop-wrap">
+  <aside class="filters" id="filters">
+    <h3>Filters</h3>
+    <div class="fgroup"><h4>Collection</h4><div id="fCats"></div></div>
+    <div class="fgroup"><h4>Price</h4><div id="fPrice"></div></div>
+    <div class="fgroup"><h4>Colour</h4><div id="fColor"></div></div>
+    <button class="btn btn-outline" style="width:100%;padding:.6rem" onclick="clearFilters()">Clear all</button>
+  </aside>
+  <main>
+    <div class="shop-top">
+      <button class="filter-toggle" onclick="filters.classList.add('open')">☰ Filters</button>
+      <span class="count" id="count"></span>
+      <select id="sort" onchange="renderShop()">
+        <option value="pop">Sort: Popularity</option>
+        <option value="lo">Price: Low to High</option>
+        <option value="hi">Price: High to Low</option>
+        <option value="off">Discount</option>
+        <option value="rate">Rating</option>
+      </select>
+    </div>
+    <div class="chip-row" id="chips"></div>
+    <div class="pgrid" id="grid"></div>
+  </main>
+</div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+const qs = new URLSearchParams(location.search);
+let state = { cats: new Set(qs.get("cat") ? [qs.get("cat")] : []), prices: new Set(), colors: new Set(), q: (qs.get("q")||"").toLowerCase(), wish: qs.get("wish") === "1" };
+const PRICES = [["u2000","Under ₹2,000",x=>x<2000],["24","₹2,000 – ₹4,000",x=>x>=2000&&x<=4000],["48","₹4,000 – ₹8,000",x=>x>4000&&x<=8000],["8p","Above ₹8,000",x=>x>8000]];
+
+function opt(name, val, label, checked){
+  return `<label class="fopt"><input type="checkbox" data-g="${name}" value="${val}" ${checked?"checked":""} onchange="onFilter(this)"> ${label}</label>`;
+}
+function buildFilters(){
+  const cats = CATEGORIES.filter(c => c !== "All");
+  fCats.innerHTML = cats.map(c => opt("cats", c, c, state.cats.has(c))).join("");
+  fPrice.innerHTML = PRICES.map(([v,l]) => opt("prices", v, l, state.prices.has(v))).join("");
+  const colors = [...new Set(PRODUCTS.map(p => p.color))].sort();
+  fColor.innerHTML = colors.map(c => opt("colors", c, c, state.colors.has(c))).join("");
+}
+function onFilter(el){
+  const set = state[el.dataset.g];
+  el.checked ? set.add(el.value) : set.delete(el.value);
+  renderShop();
+}
+function clearFilters(){ state.cats.clear(); state.prices.clear(); state.colors.clear(); state.q = ""; state.wish = false; buildFilters(); renderShop(); }
+
+function renderShop(){
+  let list = PRODUCTS.filter(p =>
+    (!state.cats.size || state.cats.has(p.category)) &&
+    (!state.colors.size || state.colors.has(p.color)) &&
+    (!state.prices.size || [...state.prices].some(v => PRICES.find(x=>x[0]===v)[2](p.price))) &&
+    (!state.q || (p.name+" "+p.fabric+" "+p.color+" "+p.category).toLowerCase().includes(state.q)) &&
+    (!state.wish || SS.getWish().includes(p.id))
+  );
+  const s = sort.value;
+  if (s === "lo") list.sort((a,b) => a.price-b.price);
+  else if (s === "hi") list.sort((a,b) => b.price-a.price);
+  else if (s === "off") list.sort((a,b) => SS.off(b)-SS.off(a));
+  else if (s === "rate") list.sort((a,b) => b.rating-a.rating);
+  else list.sort((a,b) => b.rating*b.ratings - a.rating*a.ratings);
+  count.textContent = `${list.length} saree${list.length===1?"":"s"}${state.q?` for “${state.q}”`:""}${state.wish?" in your wishlist":""}`;
+  const chips = [];
+  state.cats.forEach(c => chips.push(c)); state.colors.forEach(c => chips.push(c));
+  state.prices.forEach(v => chips.push(PRICES.find(x=>x[0]===v)[1]));
+  chipRow = chips.map(c => `<span class="chip on">${c}</span>`).join("");
+  chipsEl = document.getElementById("chips"); chipsEl.innerHTML = chipRow;
+  grid.innerHTML = list.length ? list.map(SS.cardHTML).join("") :
+    `<div class="empty" style="grid-column:1/-1"><div class="serif">No sarees match</div><p>Try clearing a filter or two.</p></div>`;
+  SS.observeReveals();
+  filters.classList.remove("open");
+}
+document.addEventListener("DOMContentLoaded", () => { buildFilters(); renderShop(); });
+</script>
+</body>
+</html>

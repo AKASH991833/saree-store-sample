@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saree Studio — Handpicked Sarees for Every Occasion</title>
+<meta name="description" content="Saree Studio online store design sample — silk, Banarasi, bridal and party sarees.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="home">
+
+<section class="hero">
+  <div class="container hero-in">
+    <div>
+      <span class="hero-kicker">New festive collection</span>
+      <h1>Every drape tells a <em>story of elegance</em></h1>
+      <p>From heirloom Banarasi silks to feather-light everyday chiffons — explore sarees handpicked for weddings, festivals and every beautiful day in between.</p>
+      <div class="hero-cta">
+        <a class="btn btn-maroon" href="shop.html">Shop all sarees</a>
+        <a class="btn btn-outline" href="shop.html?cat=Bridal">Bridal collection</a>
+      </div>
+    </div>
+    <div class="hero-img">
+      <div class="arch"><img src="assets/img/hero.jpg" alt="Folded silk sarees in rich festive colours"></div>
+      <div class="hero-badge"><span class="n">40%+</span><span class="t">festive<br>discounts</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="trust"><div class="container trust-in">
+  <div><span id="t1"></span><span>Free delivery<small>on every sample order</small></span></div>
+  <div><span id="t2"></span><span>Easy exchange<small>7-day sample policy</small></span></div>
+  <div><span id="t3"></span><span>Quality checked<small>every single drape</small></span></div>
+  <div><span id="t4"></span><span>Handpicked weaves<small>trusted sourcing</small></span></div>
+</div></div>
+
+<section class="block"><div class="container">
+  <div class="sec-head"><span class="kick">Browse</span><h2>Shop by collection</h2><div class="flourish">✦</div></div>
+  <div class="cat-grid" id="catGrid"></div>
+</div></section>
+
+<section class="block"><div class="container">
+  <div class="sec-head"><span class="kick">Most loved</span><h2>Bestsellers</h2><div class="flourish">✦</div></div>
+  <div class="pgrid" id="bestGrid"></div>
+  <div style="text-align:center;margin-top:2rem"><a class="btn btn-outline" href="shop.html">View all sarees</a></div>
+</div></section>
+
+<section class="block"><div class="container">
+  <div class="sec-head"><span class="kick">Just arrived</span><h2>New this season</h2><div class="flourish">✦</div></div>
+  <div class="pgrid" id="newGrid"></div>
+</div></section>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  t1.innerHTML = SS.svg.truck; t2.innerHTML = SS.svg.swap; t3.innerHTML = SS.svg.shield; t4.innerHTML = SS.svg.gem;
+  const catImgs = {Silk:"p02-kanjivaram-green", Banarasi:"p01-banarasi-maroon", Bridal:"p06-bridal-crimson", Georgette:"p03-georgette-rose", Cotton:"p04-cotton-ivory", "Party Wear":"p11-net-black"};
+  catGrid.innerHTML = Object.entries(catImgs).map(([c,img]) =>
+    `<a class="cat-tile reveal" href="shop.html?cat=${encodeURIComponent(c)}"><img loading="lazy" src="assets/img/${img}.jpg" alt="${c} sarees"><span>${c}</span></a>`).join("");
+  bestGrid.innerHTML = [...PRODUCTS].sort((a,b) => b.rating*b.ratings - a.rating*a.ratings).slice(0,4).map(SS.cardHTML).join("");
+  newGrid.innerHTML = PRODUCTS.filter(p => p.badge === "New" || p.badge === "Trending").concat(PRODUCTS.filter(p=>!["New","Trending"].includes(p.badge))).slice(0,4).map(SS.cardHTML).join("");
+  SS.observeReveals();
+});
+</script>
+</body>
+</html>
