@@ -5,7 +5,7 @@
 <title>Saree — Saree Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=4">
+<link rel="stylesheet" href="assets/css/style.css?v=5">
 </head>
 <body data-page="shop">
 <div class="container">
@@ -19,15 +19,9 @@
       <div class="tax-note">Sample price · AI-generated demo photo, not actual inventory</div>
       <div class="offer-box"><h4>Sample offers</h4><ul>
         <li>Prices shown are demo prices for layout preview</li>
-        <li>Free delivery on every order in this sample</li>
-        <li>7-day easy exchange (sample policy)</li>
+        <li>Delivery and exchange policies are not set in this sample - they will be published with the live store</li>
       </ul></div>
       <table class="spec-table" id="specs"></table>
-      <div class="delivery">
-        <input id="pin" inputmode="numeric" maxlength="6" placeholder="Enter delivery PIN code">
-        <button onclick="checkPin()">Check</button>
-      </div>
-      <div class="pin-result" id="pinResult"></div>
       <div class="pd-actions">
         <span class="qty"><button onclick="chQty(-1)">−</button><span id="qty">1</span><button onclick="chQty(1)">+</button></span>
         <button class="btn btn-outline" onclick="addCart()">Add to cart</button>
@@ -42,8 +36,8 @@
     <div class="pgrid" id="similar"></div>
   </section>
 </div>
-<script src="assets/js/data.js?v=4"></script>
-<script src="assets/js/main.js?v=4"></script>
+<script src="assets/js/data.js?v=5"></script>
+<script src="assets/js/main.js?v=5"></script>
 <script>
 const id = new URLSearchParams(location.search).get("id");
 const p = SS.prod(id) || PRODUCTS[0];
@@ -55,13 +49,6 @@ function waSingle(){
   const url = SS.whatsappOrder(msg);
   if (url) open(url, "_blank");
   else SS.toast("Sample only — the shop's WhatsApp number is not connected yet");
-}
-function checkPin(){
-  const v = pin.value.trim();
-  if (!/^\d{6}$/.test(v)) { pinResult.textContent = "Enter a valid 6-digit PIN code"; pinResult.style.color = "#b3261e"; return; }
-  const d = new Date(Date.now() + 4*864e5);
-  pinResult.style.color = "";
-  pinResult.textContent = `Delivery to ${v} by ${d.toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"})} — sample estimate`;
 }
 document.addEventListener("DOMContentLoaded", () => {
   document.title = p.name + " — Saree Studio";
