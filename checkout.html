@@ -5,53 +5,85 @@
 <title>Order on WhatsApp — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=7">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
 </head>
 <body data-page="cart">
 <div class="container" id="coRoot"></div>
-<script src="assets/js/data.js?v=7"></script>
-<script src="assets/js/main.js?v=7"></script>
+<script src="assets/js/data.js?v=8"></script>
+<script src="assets/js/main.js?v=8"></script>
 <script>
-function waOrder(){
+function orderText(){
   const c = SS.getCart();
-  const lines = c.map(l => { const p = SS.prod(l.id); return p ? `• ${p.name} x ${l.qty} — ${SS.fmt(p.price*l.qty)}` : ""; }).join("\n");
+  const lines = c.map(l => {
+    const p = SS.prod(l.id); if (!p) return "";
+    const optTxt = l.opt && p.options ? ` (${p.options.label}: ${l.opt})` : "";
+    return `• ${p.name}${optTxt} x ${l.qty} — ${SS.fmt(p.price*l.qty)}\n  Photo: ${SS.siteUrl}product.html?id=${p.id}`;
+  }).join("\n");
   const total = c.reduce((s,l) => { const p = SS.prod(l.id); return p ? s + p.price*l.qty : s; }, 0);
-  const msg = `Namaste! I would like to order:\n${lines}\nTotal shown on site: ${SS.fmt(total)}\nPlease confirm availability and final total.`;
-  const url = SS.whatsappOrder(msg);
+  const how = document.querySelector('input[name="how"]:checked')?.value || "Shop pickup";
+  const note = (document.getElementById("note")?.value || "").trim().slice(0, 200);
+  let msg = `Namaste! I would like to order:\n${lines}\nTotal shown on site: ${SS.fmt(total)} (demo prices)\nPreference: ${how}`;
+  if (how === "Home delivery") msg += `\nI will share my name and address here in chat.`;
+  if (note) msg += `\nNote: ${note}`;
+  msg += `\nPlease confirm availability and final total.`;
+  return msg;
+}
+function waOrder(){
+  const url = SS.whatsappOrder(orderText());
   if (url) { open(url, "_blank"); }
-  else { SS.toast("Sample only — the shop's WhatsApp number is not connected yet"); }
+  else { SS.toast("WhatsApp ordering is not available in this preview"); }
+}
+function copyOrder(){
+  const done = () => SS.toast("Order text copied — paste it in any chat");
+  const txt = orderText();
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, () => fallbackCopy(txt, done));
+  else fallbackCopy(txt, done);
+}
+function fallbackCopy(txt, done){
+  const ta = document.createElement("textarea");
+  ta.value = txt; document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); done(); } catch(e){ SS.toast("Copy not available in this browser"); }
+  ta.remove();
 }
 function renderCheckout(){
   const c = SS.getCart();
   if (!c.length){ coRoot.innerHTML = `<div class="empty"><div class="serif">Nothing to order yet</div><p>Add something to your cart first.</p><br><a class="btn btn-maroon" href="shop.html">Shop now</a></div>`; return; }
-  let mrp = 0, total = 0;
+  let total = 0;
   const rows = c.map(l => {
     const p = SS.prod(l.id); if (!p) return "";
-    mrp += p.mrp*l.qty; total += p.price*l.qty;
+    total += p.price*l.qty;
     return `<div class="cart-item">
       <a href="product.html?id=${p.id}"><img src="${p.img}" alt="${p.name}"></a>
       <div>
         <div class="ci-name">${p.name}</div>
-        <div class="ci-meta">${p.fabric} · ${p.color}</div>
+        <div class="ci-meta">${l.opt ? (p.options ? p.options.label : "Option") + ": " + l.opt + " · " : ""}${p.fabric} · ${p.color}</div>
         <div class="ci-price">${SS.fmt(p.price)} × ${l.qty}</div>
       </div>
-      <div class="ci-right"><button class="remove" onclick="SS.setCart(SS.getCart().filter(x=>x.id!=='${p.id}'));renderCheckout()">Remove</button></div>
+      <div class="ci-right"><button class="remove" onclick="SS.removeLine('${SS.lineKey(l)}');renderCheckout()">Remove</button></div>
     </div>`;
   }).join("");
   coRoot.innerHTML = `<div class="cart-wrap">
     <div>
       <h2 class="serif" style="color:var(--maroon-dark);margin-bottom:.4rem">Order on WhatsApp</h2>
-      <p style="font-size:.9rem;color:#453a3d;margin-bottom:1.1rem">No login, no forms. One tap opens your WhatsApp with this order already written — you just press send. The shop confirms availability and the final total in chat. Name and address are shared in chat only if you want home delivery; pickup needs no address.</p>
+      <p style="font-size:.9rem;color:#453a3d;margin-bottom:1.1rem">No login, no forms. One tap opens your WhatsApp with this order already written — you just press send. Each item carries a photo link so the shop sees exactly what you picked. The shop confirms availability and the final total in chat; nothing is booked before that.</p>
       ${rows}
+      <div class="how-box">
+        <h4>How would you like it?</h4>
+        <label class="how-opt"><input type="radio" name="how" value="Shop pickup" checked> <span><b>Shop pickup</b><small>No address needed — collect from the shop</small></span></label>
+        <label class="how-opt"><input type="radio" name="how" value="Home delivery"> <span><b>Home delivery</b><small>You share your name and address in the WhatsApp chat, only if you choose this</small></span></label>
+        <h4 style="margin-top:.9rem">Note for the shop (optional)</h4>
+        <textarea id="note" maxlength="200" placeholder="e.g. blouse stitching, gift packing, colour preference…"></textarea>
+      </div>
     </div>
     <div class="summary">
       <h3>Order summary</h3>
-      <div class="srow"><span>Total MRP</span><span>${SS.fmt(mrp)}</span></div>
-      <div class="srow"><span>Discount on MRP</span><span style="color:var(--green);font-weight:700">− ${SS.fmt(mrp-total)}</span></div>
+      <div class="srow"><span>Items total</span><span>${SS.fmt(total)}</span></div>
       <div class="srow"><span>Delivery</span><span>Confirmed on WhatsApp</span></div>
       <div class="srow total"><span>Total</span><span>${SS.fmt(total)}</span></div>
+      <p style="font-size:.72rem;color:var(--muted);margin:.5rem 0 .8rem">All prices are demo prices for layout preview.</p>
       <button class="btn btn-maroon" style="width:100%" onclick="waOrder()">Send order on WhatsApp</button>
-      <p style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.6rem">Sample — not connected to a shop number yet; payment as usual (cash / UPI), confirmed in chat</p>
+      <button class="btn btn-outline" style="width:100%;margin-top:.55rem" onclick="copyOrder()">Copy order text</button>
+      <p style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.6rem">Demo catalog — the shop confirms availability and the final total in chat; payment as usual (cash / UPI). Nothing is booked until the shop confirms.</p>
     </div>
   </div>`;
 }

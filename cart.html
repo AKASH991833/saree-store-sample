@@ -5,41 +5,36 @@
 <title>Your Cart — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=7">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
 </head>
 <body data-page="cart">
 <div class="container" id="cartRoot"></div>
-<script src="assets/js/data.js?v=7"></script>
-<script src="assets/js/main.js?v=7"></script>
+<script src="assets/js/data.js?v=8"></script>
+<script src="assets/js/main.js?v=8"></script>
 <script>
-function setQty(id, d){
-  const c = SS.getCart();
-  const l = c.find(x => x.id === id);
-  if (!l) return;
-  l.qty = Math.max(1, Math.min(10, l.qty + d));
-  SS.setCart(c); renderCart();
-}
-function removeItem(id){ SS.setCart(SS.getCart().filter(x => x.id !== id)); renderCart(); }
+function setQty(key, d){ SS.updateLine(key, d); renderCart(); }
+function removeItem(key){ SS.removeLine(key); renderCart(); }
 function renderCart(){
   const c = SS.getCart();
   if (!c.length){
     cartRoot.innerHTML = `<div class="empty"><div class="serif">Your cart is waiting to be beautiful</div><p>Browse the collection and add something you love.</p><br><a class="btn btn-maroon" href="shop.html">Shop now</a></div>`;
     return;
   }
-  let mrp = 0, total = 0;
+  let total = 0;
   const rows = c.map(l => {
     const p = SS.prod(l.id); if (!p) return "";
-    mrp += p.mrp * l.qty; total += p.price * l.qty;
+    const key = SS.lineKey(l);
+    total += p.price * l.qty;
     return `<div class="cart-item">
       <a href="product.html?id=${p.id}"><img src="${p.img}" alt="${p.name}"></a>
       <div>
         <div class="ci-name">${p.name}</div>
-        <div class="ci-meta">${p.fabric} · ${p.color}</div>
-        <div class="ci-price">${SS.fmt(p.price)}<span class="was">${SS.fmt(p.mrp)}</span></div>
+        <div class="ci-meta">${l.opt ? (p.options ? p.options.label : "Option") + ": " + l.opt + " · " : ""}${p.fabric} · ${p.color}</div>
+        <div class="ci-price">${SS.fmt(p.price)}<span class="save" style="margin-left:.4rem">demo price</span></div>
       </div>
       <div class="ci-right">
-        <span class="qty"><button onclick="setQty('${p.id}',-1)">−</button><span>${l.qty}</span><button onclick="setQty('${p.id}',1)">+</button></span>
-        <button class="remove" onclick="removeItem('${p.id}')">Remove</button>
+        <span class="qty"><button onclick="setQty('${key}',-1)">−</button><span>${l.qty}</span><button onclick="setQty('${key}',1)">+</button></span>
+        <button class="remove" onclick="removeItem('${key}')">Remove</button>
       </div>
     </div>`;
   }).join("");
@@ -47,11 +42,10 @@ function renderCart(){
     <div><h2 class="serif" style="color:var(--maroon-dark);margin-bottom:1rem">Your cart (${c.reduce((s,l)=>s+l.qty,0)})</h2>${rows}</div>
     <div class="summary">
       <h3>Price details</h3>
-      <div class="srow"><span>Total MRP</span><span>${SS.fmt(mrp)}</span></div>
-      <div class="srow"><span>Discount on MRP</span><span style="color:var(--green);font-weight:700">− ${SS.fmt(mrp-total)}</span></div>
+      <div class="srow"><span>Items total</span><span>${SS.fmt(total)}</span></div>
       <div class="srow"><span>Delivery</span><span>Not set in sample</span></div>
       <div class="srow total"><span>Total amount</span><span>${SS.fmt(total)}</span></div>
-      <div class="save-note">You save ${SS.fmt(mrp-total)} on this order</div>
+      <p style="font-size:.72rem;color:var(--muted);margin:.5rem 0 .8rem">All prices are demo prices for layout preview.</p>
       <a class="btn btn-maroon" style="width:100%" href="checkout.html">Order on WhatsApp</a>
       <p style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.6rem">No login or form — order goes to the shop on WhatsApp</p>
     </div>

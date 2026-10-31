@@ -15,7 +15,6 @@
   window.SS = {
     svg: SVG,
     fmt: n => "₹" + n.toLocaleString("en-IN"),
-    off: p => Math.round((1 - p.price / p.mrp) * 100),
     prod: id => PRODUCTS.find(p => p.id === id),
     stars: r => {
       const f = Math.round(r);
@@ -23,14 +22,25 @@
     },
     getCart(){ try { return JSON.parse(localStorage.getItem("ss_cart") || "[]"); } catch(e){ return []; } },
     setCart(c){ localStorage.setItem("ss_cart", JSON.stringify(c)); SS.badge(); },
-    addToCart(id, qty){
+    lineKey: l => l.id + "|" + (l.opt || ""),
+    addToCart(id, qty, opt){
       const c = SS.getCart();
-      const line = c.find(l => l.id === id);
+      const key = id + "|" + (opt || "");
+      const line = c.find(l => SS.lineKey(l) === key);
       if (line) line.qty = Math.min(10, line.qty + (qty || 1));
-      else c.push({ id, qty: qty || 1 });
+      else c.push({ id, qty: qty || 1, opt: opt || "" });
       SS.setCart(c);
       SS.toast("Added to cart");
+      SS.openCartDrawer();
     },
+    updateLine(key, d){
+      const c = SS.getCart();
+      const l = c.find(x => SS.lineKey(x) === key);
+      if (!l) return;
+      l.qty = Math.max(1, Math.min(10, l.qty + d));
+      SS.setCart(c);
+    },
+    removeLine(key){ SS.setCart(SS.getCart().filter(x => SS.lineKey(x) !== key)); },
     getWish(){ try { return JSON.parse(localStorage.getItem("ss_wish") || "[]"); } catch(e){ return []; } },
     toggleWish(id, el){
       let w = SS.getWish();
@@ -49,6 +59,12 @@
       t.textContent = msg; t.classList.add("show");
       clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 2200);
     },
+    siteUrl: "https://akash991833.github.io/saree-store-sample/",
+    waGeneral(){
+      const url = SS.whatsappOrder("Namaste! I have a question about a product at Saree Sansar.");
+      if (url) open(url, "_blank");
+      else SS.toast("WhatsApp ordering is not available in this preview");
+    },
     whatsappOrder(text){
       if (SHOP.whatsapp) return "https://wa.me/" + SHOP.whatsapp + "?text=" + encodeURIComponent(text);
       return null;
@@ -61,10 +77,12 @@
       <div class="pimg">
         <img loading="lazy" src="${p.img}" alt="${p.name}">
         ${p.badge ? `<span class="pbadge">${p.badge}</span>` : ""}
+        ${p.stock === "low" ? `<span class="pstock low">Few left</span>` : p.stock === "out" ? `<span class="pstock out">Sold out (demo)</span>` : ""}
         <span class="poff">Demo price</span>
+        <button class="qv" onclick="event.preventDefault();SS.quickView('${p.id}')">Quick view</button>
         <button class="wish${wished}" aria-label="wishlist" onclick="event.preventDefault();SS.toggleWish('${p.id}',this)">${SVG.heart}</button>
       </div>
-      <div class="pbody">
+      <div class="pbody${p.stock === "out" ? " soldout" : ""}">
         <div class="pname">${p.name}</div>
         <div class="prate"><span class="stars">${SS.stars(p.rating)}</span> ${p.rating} · sample rating</div>
         <div class="pprice"><span class="now">${SS.fmt(p.price)}</span><span class="save">demo price</span></div>
@@ -77,7 +95,7 @@
     const page = document.body.dataset.page || "";
     const active = c => (page === "shop" && document.body.dataset.cat === c) ? " class=active" : "";
     const head = `
-      <div class="demo-ribbon">Design sample — <b>AI-generated demo photos, demo prices</b> — not a live store, no real orders</div>
+      <div class="demo-ribbon">Design sample — <b>AI-generated demo photos, demo prices</b> — order requests go to the shop on WhatsApp; nothing is booked until the shop confirms</div>
       <header class="site">
         <div class="container hd-main">
           <a class="logo" href="index.html"><span class="l1">Saree</span> <span class="l2">Sansar</span><small>${SHOP.tagline}</small></a>
@@ -107,9 +125,12 @@
           <div><h4>Help</h4>
             <a href="cart.html">Your cart</a><a href="checkout.html">Checkout</a><a href="#" onclick="SS.toast('Sample only — policies will be published with the live store');return false">Returns &amp; exchange</a>
           </div>
+          <div><h4>Shop owner</h4>
+            <a href="owner.html">Owner view (demo)</a>
+          </div>
           <div><h4>Visit / contact</h4>
             <a href="#" onclick="SS.toast('Shop address, phone and WhatsApp will appear here once confirmed');return false">Store details coming soon</a>
-            <a href="#" onclick="SS.toast('WhatsApp ordering will be connected once the shop number is confirmed');return false">Order on WhatsApp</a>
+            <a href="#" onclick="SS.waGeneral();return false">Order on WhatsApp</a>
           </div>
         </div>
         <div class="container ft-bottom">
@@ -141,4 +162,148 @@
     setTimeout(() => document.querySelectorAll(".reveal").forEach(el => el.classList.add("vis")), 900);
   };
   document.addEventListener("DOMContentLoaded", shell);
+})();
+
+/* ===== Advanced storefront features (demo) ===== */
+(function(){
+  // ---------- option chips ----------
+  SS.optChips = function(p, sel){
+    if (!p.options) return "";
+    const cur = sel || p.options.choices[0];
+    return `<div class="opt-row"><span class="opt-label">${p.options.label}:</span><div class="opt-chips">` +
+      p.options.choices.map(c => `<button type="button" class="opt-chip${c === cur ? " on" : ""}" data-opt="${c}" onclick="SS.pickOpt(this)">${c}</button>`).join("") +
+      `</div></div>`;
+  };
+  SS.pickOpt = function(btn){
+    btn.closest(".opt-chips").querySelectorAll(".opt-chip").forEach(b => b.classList.remove("on"));
+    btn.classList.add("on");
+    const hidden = btn.closest(".opt-scope")?.querySelector(".opt-value");
+    if (hidden) hidden.value = btn.dataset.opt;
+  };
+  SS.chosenOpt = function(scope){
+    const on = (scope || document).querySelector(".opt-scope .opt-chip.on");
+    return on ? on.dataset.opt : "";
+  };
+
+  // ---------- cart drawer ----------
+  function drawerHTML(){
+    const c = SS.getCart();
+    const items = c.map(l => {
+      const p = SS.prod(l.id); if (!p) return "";
+      return `<div class="cd-item">
+        <img src="${p.img}" alt="${p.name}">
+        <div class="cd-info">
+          <div class="cd-name">${p.name}</div>
+          ${l.opt ? `<div class="cd-opt">${p.options ? p.options.label : "Option"}: ${l.opt}</div>` : ""}
+          <div class="cd-price">${SS.fmt(p.price)} · demo price</div>
+        </div>
+        <div class="cd-right">
+          <span class="qty"><button onclick="SS.updateLine('${SS.lineKey(l)}',-1);SS.refreshDrawer()">−</button><span>${l.qty}</span><button onclick="SS.updateLine('${SS.lineKey(l)}',1);SS.refreshDrawer()">+</button></span>
+          <button class="remove" onclick="SS.removeLine('${SS.lineKey(l)}');SS.refreshDrawer()">✕</button>
+        </div>
+      </div>`;
+    }).join("");
+    const total = c.reduce((s,l) => { const p = SS.prod(l.id); return p ? s + p.price*l.qty : s; }, 0);
+    return `<div class="cd-head"><b>Your cart (${c.reduce((s,l)=>s+l.qty,0)})</b><button class="cd-close" onclick="SS.closeCartDrawer()">✕</button></div>
+      ${c.length ? `<div class="cd-items">${items}</div>
+      <div class="cd-foot">
+        <div class="cd-total"><span>Demo total</span><b>${SS.fmt(total)}</b></div>
+        <a class="btn btn-maroon" href="checkout.html">Order on WhatsApp</a>
+        <a class="btn btn-outline" href="cart.html">View full cart</a>
+        <p class="cd-note">Demo prices — the shop confirms availability and total in chat</p>
+      </div>` : `<div class="cd-empty">Your cart is empty.<br><a href="shop.html">Browse the collection →</a></div>`}`;
+  }
+  SS.openCartDrawer = function(){
+    let d = document.querySelector(".cart-drawer");
+    if (!d){
+      document.body.insertAdjacentHTML("beforeend", `<div class="drawer-scrim" onclick="SS.closeCartDrawer()"></div><aside class="cart-drawer" aria-label="cart"></aside>`);
+      d = document.querySelector(".cart-drawer");
+    }
+    d.innerHTML = drawerHTML();
+    document.body.classList.add("drawer-open");
+  };
+  SS.refreshDrawer = function(){
+    const d = document.querySelector(".cart-drawer");
+    if (d) d.innerHTML = drawerHTML();
+  };
+  SS.closeCartDrawer = function(){ document.body.classList.remove("drawer-open"); };
+
+  // ---------- quick view ----------
+  SS.quickView = function(id){
+    const p = SS.prod(id); if (!p) return;
+    let qv = document.querySelector(".qv-modal");
+    if (!qv){
+      document.body.insertAdjacentHTML("beforeend", `<div class="qv-scrim" onclick="SS.closeQuickView()"></div><div class="qv-modal" role="dialog" aria-label="quick view"></div>`);
+      qv = document.querySelector(".qv-modal");
+    }
+    const out = p.stock === "out";
+    qv.innerHTML = `<button class="qv-close" onclick="SS.closeQuickView()">✕</button>
+      <div class="qv-grid">
+        <div class="qv-img"><img src="${p.img}" alt="${p.name}"></div>
+        <div class="opt-scope">
+          <input type="hidden" class="opt-value" value="${p.options ? p.options.choices[0] : ""}">
+          <div class="qv-cat">${p.category} · AI-generated demo photo</div>
+          <h3>${p.name}</h3>
+          <div class="prate"><span class="stars">${SS.stars(p.rating)}</span> ${p.rating} · sample rating</div>
+          <div class="pprice" style="margin:.5rem 0"><span class="now">${SS.fmt(p.price)}</span><span class="save">demo price</span></div>
+          ${p.stock === "low" ? `<div class="stock-line low">Few left (demo stock)</div>` : out ? `<div class="stock-line out">Sold out in this demo</div>` : `<div class="stock-line in">In stock (demo stock)</div>`}
+          ${SS.optChips(p)}
+          <div class="qv-actions">
+            <button class="btn btn-outline" ${out ? "disabled" : ""} onclick="SS.addToCart('${p.id}',1,SS.chosenOpt(this.closest('.opt-scope')));SS.closeQuickView()">Add to cart</button>
+            <button class="btn btn-maroon" ${out ? "disabled" : ""} onclick="SS.qvOrder('${p.id}')">Order on WhatsApp</button>
+          </div>
+          <a class="qv-more" href="product.html?id=${p.id}">Full details →</a>
+        </div>
+      </div>`;
+    document.body.classList.add("qv-open");
+  };
+  SS.qvOrder = function(id){
+    const p = SS.prod(id);
+    const opt = SS.chosenOpt(document.querySelector(".qv-modal"));
+    const optTxt = opt && p.options ? ` (${p.options.label}: ${opt})` : "";
+    const msg = `Namaste! I would like to order: ${p.name}${optTxt} x 1 — ${SS.fmt(p.price)} (demo price). Please confirm availability and final total.\nPhoto: ${SS.siteUrl}product.html?id=${p.id}`;
+    const url = SS.whatsappOrder(msg);
+    if (url) open(url, "_blank");
+    else SS.toast("WhatsApp ordering is not available in this preview");
+  };
+  SS.closeQuickView = function(){ document.body.classList.remove("qv-open"); };
+
+  // ---------- search suggestions ----------
+  function wireSearch(){
+    const form = document.querySelector(".search-wrap");
+    if (!form) return;
+    const inp = form.querySelector("input");
+    const box = document.createElement("div");
+    box.className = "suggest";
+    form.appendChild(box);
+    inp.setAttribute("autocomplete", "off");
+    inp.addEventListener("input", () => {
+      const q = inp.value.trim().toLowerCase();
+      if (q.length < 2) { box.classList.remove("show"); return; }
+      const hits = PRODUCTS.filter(p => (p.name + " " + p.fabric + " " + p.color + " " + p.category).toLowerCase().includes(q)).slice(0, 6);
+      if (!hits.length) { box.innerHTML = `<div class="sg-none">No matches in the demo catalog</div>`; box.classList.add("show"); return; }
+      box.innerHTML = hits.map(p => `<a class="sg-item" href="product.html?id=${p.id}"><img src="${p.img}" alt=""><span>${p.name}<small>${p.category} · ${SS.fmt(p.price)} demo</small></span></a>`).join("");
+      box.classList.add("show");
+    });
+    document.addEventListener("click", e => { if (!form.contains(e.target)) box.classList.remove("show"); });
+  }
+
+  // ---------- recently viewed ----------
+  SS.pushRecent = function(id){
+    try {
+      let r = JSON.parse(localStorage.getItem("ss_recent") || "[]");
+      r = [id, ...r.filter(x => x !== id)].slice(0, 8);
+      localStorage.setItem("ss_recent", JSON.stringify(r));
+    } catch(e){}
+  };
+  SS.recentHTML = function(excludeId){
+    let r = [];
+    try { r = JSON.parse(localStorage.getItem("ss_recent") || "[]"); } catch(e){}
+    const items = r.filter(x => x !== excludeId).map(x => SS.prod(x)).filter(Boolean).slice(0, 4);
+    if (!items.length) return "";
+    return `<section class="block"><div class="sec-head"><span class="kick">Your browsing</span><h2>Recently viewed</h2><div class="flourish">✦</div></div>
+      <div class="pgrid">${items.map(SS.cardHTML).join("")}</div></section>`;
+  };
+
+  document.addEventListener("DOMContentLoaded", wireSearch);
 })();

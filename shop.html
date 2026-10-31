@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shop Sarees — Saree Sansar</title>
+<title>Shop All — Saree Sansar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=7">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
 </head>
 <body data-page="shop">
 <div class="container shop-wrap">
@@ -14,6 +14,7 @@
     <div class="fgroup"><h4>Collection</h4><div id="fCats"></div></div>
     <div class="fgroup"><h4>Price</h4><div id="fPrice"></div></div>
     <div class="fgroup"><h4>Colour</h4><div id="fColor"></div></div>
+    <div class="fgroup"><h4>More</h4><div id="fMore"></div></div>
     <button class="btn btn-outline" style="width:100%;padding:.6rem" onclick="clearFilters()">Clear all</button>
   </aside>
   <main>
@@ -32,11 +33,11 @@
     <div class="pgrid" id="grid"></div>
   </main>
 </div>
-<script src="assets/js/data.js?v=7"></script>
-<script src="assets/js/main.js?v=7"></script>
+<script src="assets/js/data.js?v=8"></script>
+<script src="assets/js/main.js?v=8"></script>
 <script>
 const qs = new URLSearchParams(location.search);
-let state = { cats: new Set(qs.get("cat") ? [qs.get("cat")] : []), prices: new Set(), colors: new Set(), q: (qs.get("q")||"").toLowerCase(), wish: qs.get("wish") === "1" };
+let state = { cats: new Set(qs.get("cat") ? [qs.get("cat")] : []), prices: new Set(), colors: new Set(), more: new Set(), q: (qs.get("q")||"").toLowerCase(), wish: qs.get("wish") === "1" };
 const PRICES = [["u2000","Under ₹2,000",x=>x<2000],["24","₹2,000 – ₹4,000",x=>x>=2000&&x<=4000],["48","₹4,000 – ₹8,000",x=>x>4000&&x<=8000],["8p","Above ₹8,000",x=>x>8000]];
 
 function opt(name, val, label, checked){
@@ -48,13 +49,14 @@ function buildFilters(){
   fPrice.innerHTML = PRICES.map(([v,l]) => opt("prices", v, l, state.prices.has(v))).join("");
   const colors = [...new Set(PRODUCTS.map(p => p.color))].sort();
   fColor.innerHTML = colors.map(c => opt("colors", c, c, state.colors.has(c))).join("");
+  fMore.innerHTML = opt("more", "instock", "In stock only", state.more.has("instock")) + opt("more", "rated4", "Rated 4★ & above", state.more.has("rated4"));
 }
 function onFilter(el){
   const set = state[el.dataset.g];
   el.checked ? set.add(el.value) : set.delete(el.value);
   renderShop();
 }
-function clearFilters(){ state.cats.clear(); state.prices.clear(); state.colors.clear(); state.q = ""; state.wish = false; buildFilters(); renderShop(); }
+function clearFilters(){ state.cats.clear(); state.prices.clear(); state.colors.clear(); state.more.clear(); state.q = ""; state.wish = false; buildFilters(); renderShop(); }
 
 function renderShop(){
   let list = PRODUCTS.filter(p =>
@@ -62,7 +64,9 @@ function renderShop(){
     (!state.colors.size || state.colors.has(p.color)) &&
     (!state.prices.size || [...state.prices].some(v => PRICES.find(x=>x[0]===v)[2](p.price))) &&
     (!state.q || (p.name+" "+p.fabric+" "+p.color+" "+p.category).toLowerCase().includes(state.q)) &&
-    (!state.wish || SS.getWish().includes(p.id))
+    (!state.wish || SS.getWish().includes(p.id)) &&
+    (!state.more.has("instock") || p.stock !== "out") &&
+    (!state.more.has("rated4") || p.rating >= 4)
   );
   const s = sort.value;
   if (s === "lo") list.sort((a,b) => a.price-b.price);
