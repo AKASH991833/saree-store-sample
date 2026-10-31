@@ -245,7 +245,8 @@ footer.site{background:var(--maroon-dark);color:#d8c3bc;margin-top:3.5rem}
   .search-wrap button span{display:none}
 }
 @media(max-width:640px){
-  .hd-main{gap:.7rem;padding:.7rem 0}
+  .hd-main{gap:.7rem;padding:.7rem 0;flex-wrap:wrap}
+  .search-wrap{flex:1 1 100%;order:3;max-width:none}
   .logo{font-size:1.2rem}
   .logo small{font-size:.5rem}
   .hd-actions{display:none}
